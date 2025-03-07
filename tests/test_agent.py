@@ -74,15 +74,15 @@ class TestDeepSeekAgent(unittest.TestCase):
     def test_custom_computation_tool(self):
         """Test the custom_computation tool directly"""
         # Test basic addition
-        result = custom_computation("2+2")
+        result = custom_computation.invoke("2+2")
         self.assertEqual(result, "The result is 4.")
 
         # Test more complex expressions
-        result = custom_computation("5+(10*2)")
+        result = custom_computation.invoke("5+(10*2)")
         self.assertEqual(result, "The result is 25.")
 
         # Test error handling
-        result = custom_computation("5/0")
+        result = custom_computation.invoke("5/0")
         self.assertTrue(result.startswith("Error in computation"))
 
     def test_extract_tool_calls(self):

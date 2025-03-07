@@ -206,7 +206,8 @@ def tool_node(state: AgentState) -> Dict:
         # Execute the appropriate tool
         if tool_name == "custom_computation":
             try:
-                result = custom_computation(tool_input)
+                # Use invoke() instead of directly calling the tool
+                result = custom_computation.invoke(tool_input)
                 results.append(f"Tool Result ({tool_name}): {result}")
             except Exception as e:
                 results.append(f"Tool Error ({tool_name}): {str(e)}")

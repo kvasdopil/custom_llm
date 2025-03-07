@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Custom computation tools for DeepSeek R1 LangGraph Agent
+Custom computation tool implementation for DeepSeek R1 LangGraph Agent
 """
 from langchain.tools import tool
 from pydantic import BaseModel, Field
@@ -23,7 +23,7 @@ def custom_computation(query: str) -> str:
     """
     # Replace ^ with ** for exponentiation
     query = query.replace("^", "**")
-    
+
     # Evaluate the mathematical expression
     try:
         result = eval(query)

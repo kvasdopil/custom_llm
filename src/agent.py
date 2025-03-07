@@ -20,9 +20,9 @@ from langchain.schema import SystemMessage
 from langchain_core.tools import StructuredTool
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-# Custom tool import
-from src.tools.computation import custom_computation
-from src.tools.moon_weather import moon_weather
+# Import tools module
+from src.tools import get_all_tools, get_combined_prompt_template
+from src.tools.common_prompt import get_base_prompt_template
 
 
 class DeepSeekLLM(LLM):
@@ -117,60 +117,16 @@ def create_agent():
     llm = DeepSeekLLM(model_version=model_version)
     # print(f"Using model version: {llm.model_version}")
 
-    # Initialize tools list
-    tools = [custom_computation, moon_weather]
+    # Get all tools
+    tools = get_all_tools()
 
-    # Create the prompt using LangChain's ChatPromptTemplate
-    system_template = """
-You are a helpful AI assistant that can use tools to assist users. 
+    # Build the complete system template by combining:
+    # 1. The base template with common instructions
+    # 2. Tool-specific templates
+    base_template = get_base_prompt_template()
+    tool_templates = get_combined_prompt_template()
 
-For ANY general knowledge questions that don't involve calculations or moon weather, simply respond directly with:
-{{"action": "Final Answer", "action_input": "Your detailed answer here"}}
-
-IMPORTANT: Action names MUST be capitalized exactly as shown:
-- "Final Answer" (not "final_answer" or "FINAL ANSWER")
-- "custom_computation" (not "Custom_Computation" or "CUSTOM_COMPUTATION")
-- "moon_weather" (not "Moon_Weather" or "MOON_WEATHER")
-
-For any mathematical calculation, you MUST use the custom_computation tool. 
-DO NOT calculate the result yourself.
-
-For multi-step calculations:
-1. First use the custom_computation tool for the first calculation
-2. When you receive the result, use the custom_computation tool again with the result in a new calculation
-
-For questions about weather conditions on the moon, use the moon_weather tool
-with the appropriate coordinates.
-
-You have access to the following tools: {tools}
-
-Use a json blob to specify a tool by providing an action key (tool name) and an action_input key (tool input).
-
-Valid "action" values: "Final Answer" or {tool_names}
-
-Provide only ONE action per response, in the following format (without any additional text, preamble, or code blocks):
-
-{{
-  "action": $TOOL_NAME,
-  "action_input": $INPUT
-}}
-
-Examples:
-1. For the custom_computation tool with a simple calculation:
-{{"action": "custom_computation", "action_input": "2 + 2"}}
-
-2. For the custom_computation tool with a multi-step calculation (e.g., "Add 5 and 7, then multiply by 2"):
-   First step: {{"action": "custom_computation", "action_input": "5 + 7"}}
-   After getting result 12, second step: {{"action": "custom_computation", "action_input": "12 * 2"}}
-
-3. For the moon_weather tool:
-{{"action": "moon_weather", "action_input": {{"latitude": 40.0, "longitude": 150.0}}}}
-
-4. For general knowledge questions:
-{{"action": "Final Answer", "action_input": "The Eiffel Tower is a landmark in Paris, France."}}
-
-Follow this format exactly and do not include any markdown formatting like ```json or ```
-"""
+    system_template = base_template + "\n\n" + tool_templates
 
     human_template = "{input}\n\n{agent_scratchpad}"
 

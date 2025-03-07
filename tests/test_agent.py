@@ -6,8 +6,8 @@ import unittest
 import re
 import time
 from src.agent import run_agent, DeepSeekLLM
-from src.tools.computation import custom_computation
-from src.tools.moon_weather import moon_weather
+from src.tools.computation.tool import custom_computation
+from src.tools.moon_weather.tool import moon_weather
 
 
 class TestDeepSeekAgentIntegration(unittest.TestCase):

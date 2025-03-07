@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Moon weather tool for DeepSeek R1 LangGraph Agent
+Moon weather tool implementation for DeepSeek R1 LangGraph Agent
 """
 from langchain.tools import tool
 from pydantic import BaseModel, Field

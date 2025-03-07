@@ -91,7 +91,7 @@ def create_agent():
     # model_version = "deepseek-r1:1.5b"
     model_version = "qwen2.5:1.5b"
     llm = DeepSeekLLM(model_version=model_version)
-    print(f"Using model version: {llm.model_version}")
+    # print(f"Using model version: {llm.model_version}")
 
     # Initialize tools list
     tools = [custom_computation]

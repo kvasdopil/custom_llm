@@ -21,9 +21,6 @@ def custom_computation(query: str) -> str:
     Returns:
         A string describing the result of the computation.
     """
-    # Replace ^ with ** for exponentiation
-    query = query.replace("^", "**")
-    
     # Evaluate the mathematical expression
     try:
         result = eval(query)

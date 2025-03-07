@@ -8,7 +8,7 @@ import re
 # LangGraph imports
 from langgraph.graph import END, StateGraph
 
-# LangChain imports - just the core classes we need
+# LangChain imports
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain.llms.base import LLM
 from pydantic import BaseModel, Field
@@ -18,7 +18,7 @@ import requests
 import json
 
 # Custom tool import
-from tool import custom_computation
+from src.tools.computation import custom_computation
 
 
 class DeepSeekLLM(LLM):
@@ -206,7 +206,6 @@ def tool_node(state: AgentState) -> Dict:
         # Execute the appropriate tool
         if tool_name == "custom_computation":
             try:
-                from tool import custom_computation
                 result = custom_computation(tool_input)
                 results.append(f"Tool Result ({tool_name}): {result}")
             except Exception as e:

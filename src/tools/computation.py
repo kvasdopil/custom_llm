@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Custom tools for DeepSeek R1 LangGraph Agent
+Custom computation tools for DeepSeek R1 LangGraph Agent
 """
 from langchain.tools import tool
 from pydantic import BaseModel, Field

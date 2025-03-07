@@ -2,6 +2,27 @@
 
 This project demonstrates how to build an AI agent using the DeepSeek R1 model with the LangGraph framework.
 
+## Project Structure
+
+```
+deepseek-agent/
+├── main.py                 # Main entry point
+├── src/                    # Source code
+│   ├── agent.py            # Core agent implementation
+│   ├── llm/                # LLM-related code
+│   │   └── __init__.py
+│   └── tools/              # Tool implementations
+│       ├── __init__.py
+│       └── computation.py  # Mathematical computation tool
+├── tests/                  # Test files
+│   ├── __init__.py
+│   ├── run_tests.py        # Test runner
+│   └── test_agent.py       # Test cases
+└── utils/                  # Utility scripts
+    ├── __init__.py
+    └── benchmark.py        # Benchmarking utility
+```
+
 ## Prerequisites
 
 - Python 3.8+
@@ -10,8 +31,16 @@ This project demonstrates how to build an AI agent using the DeepSeek R1 model w
 
 ## Installation
 
+Install the required dependencies:
+
 ```bash
 pip install -r requirements.txt
+```
+
+For development, install in editable mode:
+
+```bash
+pip install -e .
 ```
 
 ## Usage
@@ -38,13 +67,55 @@ python main.py "What is machine learning?"
 
 # Perform a calculation (will use the custom_computation tool)
 python main.py "Calculate 23 * 17"
+
+# Multi-step reasoning (combines tool results)
+python main.py "What is 5+7, and then multiply that by 2?"
 ```
 
-## Project Structure
+## Running Tests
 
-- `main.py` - Main entry point, takes a query as argument
-- `simple_langgraph.py` - LangGraph implementation using StateGraph
-- `tool.py` - Contains custom tools used by the agent
+The project includes unit tests to verify functionality:
+
+```bash
+# Run all tests with detailed output
+python -m tests.run_tests
+
+# Run tests using the unittest module directly
+python -m unittest tests.test_agent
+
+# Run a specific test
+python -m unittest tests.test_agent.TestDeepSeekAgent.test_llm_processes_tool_results
+```
+
+These tests verify:
+
+- Basic agent responses to general questions
+- Detection of simple and complex calculations
+- The custom_computation tool functionality
+- Extraction of tool calls from responses
+- Multi-step reasoning where the agent uses tool results for further processing
+- Tool result integration into the agent's reasoning process
+
+## Benchmarking
+
+You can benchmark the agent's performance using the benchmark script:
+
+```bash
+# Run with default questions
+python -m utils.benchmark
+
+# Use custom questions from a file
+python -m utils.benchmark --questions-file my_questions.txt
+
+# Specify output file
+python -m utils.benchmark --output-file results.json
+```
+
+The benchmark runs the agent on a set of questions and measures:
+
+- Response time for each question
+- Success rate (based on response length and tool usage)
+- Overall statistics about agent performance
 
 ## Architecture
 
@@ -52,6 +123,7 @@ python main.py "Calculate 23 * 17"
 - Uses the StateGraph pattern for defining the agent workflow
 - Implements custom agent and tool nodes for flexible processing
 - Automatically detects calculation queries and uses the appropriate tool
+- Supports multi-step reasoning using tool results
 
 ## Troubleshooting
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-DeepSeek R1 with LangGraph - A simplified agent implementation
+DeepSeek R1 with LangGraph - Main entry point
 """
 import argparse
-from simple_langgraph import run_agent
+from src.agent import run_agent
 
 
 def main():

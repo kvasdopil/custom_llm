@@ -1,0 +1,78 @@
+# Python compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.env/
+.venv/
+deepseek_env/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.pydevproject
+.spyderproject
+.spyproject
+.ropeproject
+
+# Project specific
+benchmark_results.json
+sample_results.json
+
+# Logs
+*.log
+logs/
+
+# Model checkpoints
+*.pt
+*.pth
+*.bin
+*.ckpt
+*.model
+*.h5
+
+# OS specific
+.DS_Store
+Thumbs.db 

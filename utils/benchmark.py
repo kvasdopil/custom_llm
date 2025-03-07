@@ -2,10 +2,17 @@
 """
 Benchmark script for DeepSeek R1 LangGraph Agent
 """
+from src.agent import run_agent
 import time
 import argparse
 import json
-from src.agent import run_agent
+import sys
+import os
+
+# Add the parent directory to Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir)
 
 
 # Sample questions to test the agent with
@@ -58,12 +65,13 @@ def run_benchmark(questions=None, output_file=None, max_iterations=5):
             symbol in question for symbol in "+-*/^"
         )
 
-        # Check if the response contains a tool result
-        has_tool_result = "Tool Result" in response
+        # Check if the response contains a numerical result
+        has_computation_result = "The result is" in response
 
-        # This is a simple success heuristic - should be improved for real benchmarking
+        # This is a simple success heuristic - updated for the new agent implementation
         success = (
-            has_tool_result if is_calculation else (len(response.strip()) > 20)
+            has_computation_result if is_calculation else (
+                len(response.strip()) > 20)
         )
 
         result = {
@@ -71,7 +79,7 @@ def run_benchmark(questions=None, output_file=None, max_iterations=5):
             "is_calculation": is_calculation,
             "time_seconds": round(elapsed_time, 2),
             "response_length": len(response),
-            "used_tool": has_tool_result,
+            "used_tool": has_computation_result,
             "success": success,
             "response": response[:200] + "..." if len(response) > 200 else response
         }

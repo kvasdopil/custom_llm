@@ -11,7 +11,7 @@ class CustomToolInput(BaseModel):
     query: str = Field(description="The computation query")
 
 
-@tool("custom_computation", args_schema=CustomToolInput, return_direct=True)
+@tool("custom_computation", args_schema=CustomToolInput, return_direct=False)
 def custom_computation(query: str) -> str:
     """Perform basic arithmetic computation or evaluate simple expressions.
 
@@ -19,7 +19,7 @@ def custom_computation(query: str) -> str:
         query: A string containing a mathematical expression to evaluate.
 
     Returns:
-        A string describing the result of the computation.
+        A string containing just the numerical result of the computation.
     """
     # Replace ^ with ** for exponentiation
     query = query.replace("^", "**")

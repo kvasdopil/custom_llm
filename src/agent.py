@@ -88,12 +88,23 @@ class DeepSeekLLM(LLM):
         Returns:
             Cleaned text that's better suited for parsing
         """
-        # Remove markdown-style code blocks that might interfere with JSON parsing
+        # Remove markdown-style code blocks
         text = re.sub(r'```(?:json|json_blob)?', '', text)
         text = re.sub(r'```', '', text)
 
-        # Remove extra whitespace and indentation that might break parsing
+        # Remove any text before the first { and after the last }
+        first_brace = text.find('{')
+        last_brace = text.rfind('}')
+        if first_brace != -1 and last_brace != -1:
+            text = text[first_brace:last_brace + 1]
+
+        # Remove extra whitespace and indentation
         text = text.strip()
+
+        # Try to fix common JSON formatting issues
+        text = re.sub(r'(?<!\\)"', '"', text)  # Fix quotes
+        text = re.sub(r'\s+', ' ', text)  # Normalize whitespace
+        text = re.sub(r',\s*}', '}', text)  # Remove trailing commas
 
         return text
 
@@ -112,10 +123,8 @@ class AgentState(TypedDict):
 def create_agent():
     """Create a LangChain agent with tool-calling capabilities."""
     # Set up the model
-    # model_version = "deepseek-r1:1.5b"
     model_version = "qwen2.5:1.5b"
     llm = DeepSeekLLM(model_version=model_version)
-    # print(f"Using model version: {llm.model_version}")
 
     # Get all tools
     tools = get_all_tools()
@@ -149,12 +158,13 @@ def create_agent():
         verbose=True,
         return_intermediate_steps=True,
         handle_parsing_errors=True,
+        max_iterations=3  # Limit iterations to prevent infinite loops
     )
 
     return agent_executor
 
 
-def run_agent(query: str, max_iterations: int = 5):
+def run_agent(query: str, max_iterations: int = 3):
     """Run the agent with a query.
 
     Args:
@@ -191,10 +201,18 @@ Please provide a direct and helpful response to this question:
 
 {query}
 
-Provide your answer in a clear and concise manner."""
+Format your response EXACTLY like this:
+{{"action": "Final Answer", "action_input": "Your answer here"}}"""
 
                 response = llm._call(prompt)
-                return response
+
+                # Try to parse the response as JSON
+                try:
+                    response_json = json.loads(response)
+                    return response_json.get("action_input", response)
+                except json.JSONDecodeError:
+                    return response
+
             except Exception as direct_error:
                 print(f"Error with direct approach: {direct_error}")
 
